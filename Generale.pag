@@ -1,0 +1,170 @@
+VERSION 5.00
+Begin VB.PropertyPage Generale 
+   Caption         =   "Generale"
+   ClientHeight    =   3495
+   ClientLeft      =   0
+   ClientTop       =   0
+   ClientWidth     =   5925
+   LockControls    =   -1  'True
+   PaletteMode     =   0  'Halftone
+   ScaleHeight     =   3495
+   ScaleWidth      =   5925
+   Begin VB.TextBox txtMinimo 
+      Alignment       =   1  'Right Justify
+      Height          =   330
+      Left            =   1710
+      TabIndex        =   8
+      ToolTipText     =   "Valore iniziale della scala"
+      Top             =   1680
+      Width           =   840
+   End
+   Begin VB.ComboBox cboOrientamento 
+      Height          =   315
+      Left            =   1710
+      Style           =   2  'Dropdown List
+      TabIndex        =   6
+      Top             =   1170
+      Width           =   4095
+   End
+   Begin VB.ComboBox cboUM 
+      Height          =   315
+      Left            =   1710
+      Style           =   2  'Dropdown List
+      TabIndex        =   4
+      Top             =   660
+      Width           =   4095
+   End
+   Begin VB.ComboBox cboBordo 
+      Height          =   315
+      Left            =   1710
+      Style           =   2  'Dropdown List
+      TabIndex        =   3
+      Top             =   165
+      Width           =   4095
+   End
+   Begin VB.CheckBox chkPosition 
+      Caption         =   "Position"
+      Height          =   285
+      Left            =   3120
+      TabIndex        =   1
+      ToolTipText     =   "Mostra la linea di posizione del cursore"
+      Top             =   2190
+      Width           =   1740
+   End
+   Begin VB.CheckBox chkLocked 
+      Caption         =   "Locked"
+      Height          =   285
+      Left            =   3120
+      TabIndex        =   0
+      ToolTipText     =   "Blocca il controllo, impedendone le modifiche"
+      Top             =   1695
+      Width           =   1740
+   End
+   Begin VB.Label lblMinimo 
+      AutoSize        =   -1  'True
+      Caption         =   "Minimo:"
+      Height          =   195
+      Left            =   90
+      TabIndex        =   9
+      Top             =   1755
+      Width           =   540
+   End
+   Begin VB.Label Label3 
+      AutoSize        =   -1  'True
+      Caption         =   "Orientamento:"
+      Height          =   195
+      Left            =   90
+      TabIndex        =   7
+      Top             =   1230
+      Width           =   990
+   End
+   Begin VB.Label Label2 
+      AutoSize        =   -1  'True
+      Caption         =   "Unità di misura:"
+      Height          =   195
+      Left            =   90
+      TabIndex        =   5
+      Top             =   720
+      Width           =   1080
+   End
+   Begin VB.Label Label1 
+      AutoSize        =   -1  'True
+      Caption         =   "Stile bordo:"
+      Height          =   195
+      Left            =   90
+      TabIndex        =   2
+      Top             =   210
+      Width           =   795
+   End
+End
+Attribute VB_Name = "Generale"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = True
+Attribute VB_PredeclaredId = False
+Attribute VB_Exposed = True
+Private Sub cboBordo_click()
+    Changed = True
+End Sub
+
+Private Sub cboOrientamento_click()
+    Changed = True
+End Sub
+
+Private Sub cboUM_click()
+    Changed = True
+End Sub
+
+Private Sub chkPosition_Click()
+    Changed = True
+End Sub
+
+Private Sub chkLocked_Click()
+    Changed = True
+End Sub
+
+Private Sub PropertyPage_Initialize()
+    With cboBordo
+        .Clear
+        .AddItem "0 - NoBorder"
+        .AddItem "1 - Sunken"
+        .AddItem "2 - SunkenOuter"
+        .AddItem "3 - Raised"
+        .AddItem "4 - RaisedInner"
+        .AddItem "5 - Bump"
+        .AddItem "6 - Etched"
+    End With
+    With cboUM
+        .Clear
+        .AddItem "0 - Millimetri"
+        .AddItem "1 - Inch"
+        .AddItem "2 - Pixel"
+        .AddItem "3 - Twips"
+    End With
+    With cboOrientamento
+        .Clear
+        .AddItem "0 - Orizzontale"
+        .AddItem "1 - Verticale"
+    End With
+End Sub
+
+Private Sub PropertyPage_ApplyChanges()
+    SelectedControls(0).Position = (chkPosition.Value = vbChecked)
+    SelectedControls(0).Locked = (chkLocked.Value = vbChecked)
+    SelectedControls(0).BorderStyle = cboBordo.ListIndex
+    SelectedControls(0).RulerScaleMode = cboUM.ListIndex
+    SelectedControls(0).Orientation = cboOrientamento.ListIndex
+    SelectedControls(0).Minimo = Val(Replace(txtMinimo.Text, ",", "."))
+End Sub
+
+Private Sub PropertyPage_SelectionChanged()
+    chkPosition.Value = (SelectedControls(0).Position And vbChecked)
+    chkLocked.Value = (SelectedControls(0).Locked And vbChecked)
+    cboBordo.ListIndex = SelectedControls(0).BorderStyle
+    cboUM.ListIndex = SelectedControls(0).RulerScaleMode
+    cboOrientamento.ListIndex = SelectedControls(0).Orientation
+    txtMinimo.Text = SelectedControls(0).Minimo
+End Sub
+
+Private Sub txtMinimo_Change()
+    Changed = True
+End Sub
